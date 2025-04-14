@@ -1,28 +1,26 @@
 <template>
-    <div class="card">
-        {{ owner === 'player' ? 'Your Card' : 'Enemy Card' }}
-    </div>
+  <div class="card">
+      {{ owner === 'player' ? 'Your Card' : 'Enemy Card' }}
+  </div>
 
-    <div class="card" @click="handlePlay">
-        <p>{{ card.name }}</p>
-        <p>{{ card.type }}</p>
-        <p>{{ card.value }}</p>
-    </div>
-
+  <div class="card" @click="handlePlay" v-if="card">
+      <p>{{ card.name }}</p>
+      <p>{{ card.type }}</p>
+      <p>{{ card.value }}</p>
+  </div>
 </template>
 
 <script setup>
-    import { useGameStore } from '@/stores/game'
-    import { computed } from 'vue'
+    import { useGameStore } from '@/stores/game';
+    const gameStore = useGameStore()
 
     const props = defineProps({
         card: Object,
         owner: String, })
 
-        const gameStore = useGameStore()
 
 const handlePlay = () => {
-  // Only allow the player to click their cards
+ 
   if (props.owner === 'player' && gameStore.currentTurn === 'player') {
     gameStore.playCard(props.card.id, 'player')
   }

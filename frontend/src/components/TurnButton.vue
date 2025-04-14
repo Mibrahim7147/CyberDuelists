@@ -6,7 +6,9 @@
 
 <script setup>
 defineProps({ owner: String})
-import { useGameStore } from '@/stores/game'
+import { useGameStore } from '@/stores/game.js'
+
+const gameStore = useGameStore()
 </script>
 
 <style scoped>

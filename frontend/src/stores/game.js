@@ -4,15 +4,18 @@ export const useGameStore = defineStore('game', {
   state: () => ({
     currentTurn: 'player',
     turnNumber: 1,
-    stealthPoints: 5,
-    systemIntegrity: 10,
+    stealthPoints: 100,
+    systemIntegrity: 100,
+    endTurn() {
+      this.currentTurn = this.currentTurn === 'player' ? 'enemy' : 'player';
+    },
 
     playerHand: [
-      { id: '1', name: 'Hack Pulse', type: 'attack', value: 2, owner: 'player' },
-      { id: '2', name: 'Firewall Boost', type: 'defense', value: 3, owner: 'player' }
+      { id: '1', name: 'Hack Pulse', type: 'attack', value: 20, owner: 'player' },
+      { id: '2', name: 'Firewall Boost', type: 'defense', value: 30, owner: 'player' }
     ],
     enemyHand: [
-      { id: '3', name: 'Malware Strike', type: 'attack', value: 2, owner: 'enemy' }
+      { id: '3', name: 'Malware Strike', type: 'attack', value: 20, owner: 'enemy' }
     ],
 
     playerField: [],

@@ -30,12 +30,13 @@
   </template>
   
   <script setup>
-  import Graveyard from './Graveyard.vue'
-  import DrawPile from './DrawPile.vue'
-  import TurnButton from './TurnButton.vue'
-  import Hand from './Hand.vue'
-  import Field from './Field.vue'
-  import { useGameStore } from '@/stores/game'
+  import Graveyard from './Graveyard.vue';
+  import DrawPile from './DrawPile.vue';
+  import TurnButton from './TurnButton.vue';
+  import Hand from './Hand.vue';
+  import Field from './Field.vue';
+  import { useGameStore } from '@/stores/game.js'
+
   const gameStore = useGameStore()
   </script>
   

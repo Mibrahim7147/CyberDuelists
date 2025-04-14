@@ -10,6 +10,9 @@
 
 <script setup>
 import Card from './Card.vue';
+import { useGameStore } from '@/stores/game.js'
+
+const gameStore = useGameStore()
 defineProps({ owner: String })
 </script>
 
