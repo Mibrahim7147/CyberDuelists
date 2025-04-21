@@ -1,5 +1,5 @@
 <template>
-    <button class="zone">{{ owner }} Draw Pile</button>
+    <button class="zone horizontal">{{ owner }} Draw Pile</button>
 </template>
 
 <script setup>
@@ -10,8 +10,15 @@ defineProps({ owner: String})
 .zone{
     background-color: #3b3b3b;
     color: white;
-    padding: 05rem 1rem;
+    padding: 0.5rem 1rem;
     border: 1px solid #888;
     border-radius: 6px;
+}
+
+.horizontal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
 }
 </style>

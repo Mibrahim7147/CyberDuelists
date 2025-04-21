@@ -1,29 +1,41 @@
 <template>
-    <button @click="gameStore.endTurn" :disabled="gameStore.currentTurn !== 'player'">
-        End Turn ({{ gameStore.currentTurn }})
-    </button>
+  <button class="turn-button" @click="gameStore.endTurn">
+    End Turn
+  </button>
 </template>
 
 <script setup>
-defineProps({ owner: String})
 import { useGameStore } from '@/stores/game.js'
 
 const gameStore = useGameStore()
 </script>
 
 <style scoped>
-.turn-btn{
-    padding: 0.5rem 1rem;
-    background-color: skyblue;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 0.5rem;
+.turn-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.turn-indicator{
-    font-weight: bold;
-    color: firebrick;
-    padding: 0.5rem;
+.turn-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.turn-button:active {
+  transform: scale(0.95);
 }
 </style>
