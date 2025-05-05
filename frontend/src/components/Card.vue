@@ -87,22 +87,20 @@ const handleDragEnd = () => {
 const handleCardClick = () => {
   if (props.owner === 'player' && gameStore.currentTurn === 'player') {
     if (props.card.type.toLowerCase() === 'defense') {
-      // Play defense card directly
       gameStore.playCard(props.card.id, 'player');
     } else if (props.card.type.toLowerCase() === 'attack') {
       if (selectedCard.value === props.card) {
-        // Deselect if clicking the same card
         selectedCard.value = null;
       } else if (selectedCard.value) {
-        // If another card is selected, deselect it and select this one
+        
         selectedCard.value = props.card;
       } else {
-        // Select this attack card
+        
         selectedCard.value = props.card;
       }
     }
   } else if (props.owner === 'enemy' && selectedCard.value) {
-    // Attack the selected enemy card
+    
     gameStore.playCard(selectedCard.value.id, 'player', props.card.id);
     selectedCard.value = null;
   }

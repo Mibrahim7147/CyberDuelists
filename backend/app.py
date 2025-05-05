@@ -6,7 +6,6 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Path to the cards JSON file
 CARDS_FILE = 'cards.json'
 
 @app.route("/api/test")
@@ -16,11 +15,9 @@ def test():
 @app.route("/api/cards")
 def get_cards():
     try:
-        # Check if the cards file exists
         if not os.path.exists(CARDS_FILE):
             return jsonify({"error": "Cards file not found"}), 404
         
-        # Read and parse the JSON file
         with open(CARDS_FILE, 'r') as file:
             cards_data = json.load(file)
         
