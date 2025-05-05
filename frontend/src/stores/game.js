@@ -7,6 +7,9 @@ export const useGameStore = defineStore('game', {
     stealthPoints: 1000,
     systemIntegrity: 1000,
     canAttack: false, // Controls if attacks are allowed
+    gameStarted: false,
+    gameOver: false,
+    winner: null,
 
     playerHand: [],
     enemyHand: [],
@@ -17,6 +20,11 @@ export const useGameStore = defineStore('game', {
     allCards: []
   }),
 
+  getters: {
+    isGameOver: (state) => state.gameOver,
+    getWinner: (state) => state.winner,
+  },
+
   actions: {
     async fetchCards() {
       try {
@@ -25,6 +33,7 @@ export const useGameStore = defineStore('game', {
         const data = await response.json();
         this.allCards = data.cards;
         this.initializeGame();
+        this.gameStarted = true;
       } catch (error) {
         console.error('Error fetching cards:', error);
       }
@@ -79,6 +88,36 @@ export const useGameStore = defineStore('game', {
       }
     },
 
+    checkGameOver() {
+      if (this.stealthPoints <= 0) {
+        this.gameOver = true;
+        this.winner = 'enemy';
+        return true;
+      }
+      if (this.systemIntegrity <= 0) {
+        this.gameOver = true;
+        this.winner = 'player';
+        return true;
+      }
+      return false;
+    },
+
+    resetGame() {
+      this.currentTurn = 'player';
+      this.turnNumber = 0;
+      this.stealthPoints = 1000;
+      this.systemIntegrity = 1000;
+      this.canAttack = false;
+      this.gameOver = false;
+      this.winner = null;
+      this.playerHand = [];
+      this.enemyHand = [];
+      this.playerField = [];
+      this.enemyField = [];
+      this.drawPile = [];
+      this.graveyard = [];
+    },
+
     endTurn() {
       if (this.currentTurn === 'player') {
         this.currentTurn = 'enemy';
@@ -87,7 +126,6 @@ export const useGameStore = defineStore('game', {
         this.currentTurn = 'player';
         this.turnNumber++;
         
-        // After turn 0, enable attacks and draw cards
         if (this.turnNumber > 0) {
           this.canAttack = true;
           this.drawCards('player');
@@ -96,6 +134,8 @@ export const useGameStore = defineStore('game', {
     },
 
     playCard(cardId, owner, targetCardId = null) {
+      if (this.gameOver) return;
+
       const hand = owner === 'player' ? this.playerHand : this.enemyHand;
       const field = owner === 'player' ? this.playerField : this.enemyField;
       const opponentField = owner === 'player' ? this.enemyField : this.playerField;
@@ -107,10 +147,8 @@ export const useGameStore = defineStore('game', {
 
         if (card.type.toLowerCase() === 'attack') {
           if (targetCardId) {
-            // Attack specific card
             this.resolveAttackOnCard(card, owner, opponentField, targetCardId);
           } else {
-            // Attack directly if no target
             this.resolveAttack(card, owner, opponentField);
           }
         } else if (card.type.toLowerCase() === 'defense') {
@@ -120,16 +158,16 @@ export const useGameStore = defineStore('game', {
             this.systemIntegrity += card.defense;
           }
         } else if (card.type.toLowerCase() === 'reconnaissance') {
-          // Handle reconnaissance cards
           if (owner === 'player') {
             this.stealthPoints += card.attack;
           }
         } else if (card.type.toLowerCase() === 'support') {
-          // Handle support cards
           if (owner === 'player') {
             this.stealthPoints += card.defense;
           }
         }
+
+        this.checkGameOver();
       }
     },
 

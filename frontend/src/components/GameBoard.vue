@@ -1,50 +1,61 @@
 <template>
     <div class="game-board">
-      <div class="health-display">
-        <div class="health-bar enemy">
-          <div class="health-label">System Integrity</div>
-          <div class="health-value">{{ gameStore.systemIntegrity }}</div>
-          <div class="turn-indicator enemy" :class="{ 'enemy-turn': gameStore.currentTurn === 'enemy' }">
-            {{ gameStore.currentTurn === 'enemy' ? 'Enemy Turn' : '' }}
-          </div>
+      <StartScreen />
+      
+      <div v-if="gameStore.gameOver" class="game-over">
+        <div class="game-over-message">
+          {{ gameStore.winner === 'player' ? 'You Win!' : 'You Lose!' }}
         </div>
-        <div class="turn-info">
-          <TurnNumber />
-        </div>
-        <div class="health-bar player">
-          <div class="health-label">Stealth Points</div>
-          <div class="health-value">{{ gameStore.stealthPoints }}</div>
-          <div class="turn-indicator player" :class="{ 'player-turn': gameStore.currentTurn === 'player' }">
-            {{ gameStore.currentTurn === 'player' ? 'Your Turn' : '' }}
-          </div>
-          <TurnButton owner="player" />
-        </div>
+        <button class="restart-button" @click="restartGame">Play Again</button>
       </div>
-  
-      <div class="game-area">
-        <div class="enemy-area">
-          <Hand owner="enemy" />
-        </div>
-        
-        <div class="battlefield">
-          <Field owner="enemy" />
+
+      <div v-if="gameStore.gameStarted && !gameStore.gameOver" class="game-content">
+        <div class="health-display">
+          <div class="health-bar enemy">
+            <div class="health-label">System Integrity</div>
+            <div class="health-value">{{ gameStore.systemIntegrity }}</div>
+            <div class="turn-indicator enemy" :class="{ 'enemy-turn': gameStore.currentTurn === 'enemy' }">
+              {{ gameStore.currentTurn === 'enemy' ? 'Enemy Turn' : '' }}
+            </div>
+          </div>
           <div class="turn-info">
             <TurnNumber />
           </div>
-          <Field owner="player" />
-        </div>
-
-        <div class="player-area">
-          <Hand owner="player" />
-          <div class="player-controls">
-            <div class="player-left">
-              <Graveyard owner="player" />
+          <div class="health-bar player">
+            <div class="health-label">Stealth Points</div>
+            <div class="health-value">{{ gameStore.stealthPoints }}</div>
+            <div class="turn-indicator player" :class="{ 'player-turn': gameStore.currentTurn === 'player' }">
+              {{ gameStore.currentTurn === 'player' ? 'Your Turn' : '' }}
             </div>
-            <div class="player-right">
-              <DrawPile owner="player" />
-              <div class="health-bar player">
-                <div class="health-label">Stealth Points</div>
-                <div class="health-value">{{ gameStore.stealthPoints }}</div>
+            <TurnButton owner="player" />
+          </div>
+        </div>
+    
+        <div class="game-area">
+          <div class="enemy-area">
+            <Hand owner="enemy" />
+          </div>
+          
+          <div class="battlefield">
+            <Field owner="enemy" />
+            <div class="turn-info">
+              <TurnNumber />
+            </div>
+            <Field owner="player" />
+          </div>
+
+          <div class="player-area">
+            <Hand owner="player" />
+            <div class="player-controls">
+              <div class="player-left">
+                <Graveyard owner="player" />
+              </div>
+              <div class="player-right">
+                <DrawPile owner="player" />
+                <div class="health-bar player">
+                  <div class="health-label">Stealth Points</div>
+                  <div class="health-value">{{ gameStore.stealthPoints }}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -62,9 +73,15 @@
   import { useGameStore } from '@/stores/game.js'
   import TurnNumber from './TurnNumber.vue'
   import Card from './Card.vue'
+  import StartScreen from './StartScreen.vue'
   import { onMounted } from 'vue'
 
   const gameStore = useGameStore()
+
+  const restartGame = () => {
+    gameStore.resetGame();
+    gameStore.fetchCards();
+  };
 
   onMounted(async () => {
     await gameStore.fetchCards()
@@ -261,6 +278,45 @@
   .enemy-turn {
     background-color: rgba(255, 0, 0, 0.2);
     color: #f00;
+  }
+
+  .game-over {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    z-index: 1000;
+  }
+
+  .game-over-message {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #0f0;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  }
+
+  .restart-button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    background-color: #0f0;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .restart-button:hover {
+    background-color: #00ff00;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
   }
   </style>
   
